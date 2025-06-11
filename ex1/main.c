@@ -1,10 +1,17 @@
 #include "vector.h"
-#include "lib.h"
 #include <stdio.h>
+
+typedef struct {
+    int content[3];
+} State;
 
 const int CAPACITY[] = { 10, 7, 4 };
 
 Vector VISITED;
+
+int is_finishing_condition(State state) {
+    return state.content[2] == 2 || state.content[1] == 2;
+}
 
 int min(int a, int b) {
     return a < b ? a : b;
@@ -41,31 +48,36 @@ void find_moves(Vector *moves, State state, int checking) {
 
         if (has_visited(current_move)) continue;
 
-        Vector children;
-        vector_setup(&children, 0, sizeof(Node));
-        Node move = (Node) {
-            .state = current_move,
-            .children = children,
-        };
-
-        vector_push_back(moves, &move);
+        vector_push_back(moves, &current_move);
     }
 }
 
-void get_valid_moves(Vector *moves, Node node) {
+void get_valid_moves(Vector *moves, State state) {
     for (int i = 0; i < 3; i++) {
-        if (node.state.content[i] == 0) continue;
-        find_moves(moves, node.state, i);
+        if (state.content[i] == 0) continue;
+        find_moves(moves, state, i);
     }
 }
 
-void explore(Node root) {
+void vector_extend(Vector *destination, Vector *source) {
+    for (int i = 0; i < source->size; i++) {
+        vector_push_back(destination, vector_get(source, i));
+    }
+}
+
+void explore(State root) {
     Vector possible_moves;
-    vector_setup(&possible_moves, 0, sizeof(Node));
+    vector_setup(&possible_moves, 0, sizeof(State));
+
+    get_valid_moves(&possible_moves, root);
+    vector_extend(&VISITED, &possible_moves);
 
     for (int i = 0; i < possible_moves.size; i++) {
-        Node node = *(Node *) vector_get(&possible_moves, i);
-        printf("%d %d %d\n", node.state.content[0], node.state.content[1], node.state.content[2]);
+        State node = *(State *) vector_get(&possible_moves, i);
+        printf("%d %d %d\n", node.content[0], node.content[1], node.content[2]);
+        if (is_finishing_condition(node)) {
+            return;
+        }
 
         explore(node);
     }
@@ -73,16 +85,10 @@ void explore(Node root) {
 
 int main() {
     vector_setup(&VISITED, 0, sizeof(State));
-    State initial_state = (State) {
+    State root = (State) {
         .content = { 0, 7, 4 }
     };
 
-    Vector children;
-    vector_setup(&children, 0, sizeof(Node));
-    Node root = (Node) {
-        .state = initial_state,
-        .children = children,
-    };
     explore(root);
     return 0;
 }
