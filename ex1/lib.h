@@ -1,4 +1,3 @@
-#include <sys/types.h>
 #include "vector.h"
 
 #ifndef lib
