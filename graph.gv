@@ -1,0 +1,79 @@
+digraph graph_name {
+  graph [
+    charset = "UTF-8";
+    label = "Cây DFS cho bài toán đổ nước",
+    labelloc = "t",
+    labeljust = "c",
+    bgcolor = "#343434",
+    fontcolor = white,
+    fontsize = 18,
+    style = "filled",
+    rankdir = TB,
+    margin = 0.2,
+    splines = spline,
+    ranksep = 1.0,
+    nodesep = 0.9
+  ];
+
+  node [
+    colorscheme = "rdylgn11"
+    style = "solid,filled",
+    fontsize = 16,
+    fontcolor = 6,
+    fontname = "Migu 1M",
+    color = 7,
+    fillcolor = 11,
+    fixedsize = true,
+    height = 0.6,
+    width = 1.2
+  ];
+
+  edge [
+    style = solid,
+    fontsize = 14,
+    fontcolor = white,
+    fontname = "Migu 1M",
+    color = white,
+    labelfloat = true,
+    labeldistance = 2.5,
+    labelangle = 70
+  ];
+    
+    _0_7_4_ -> _7_0_4_
+    _7_0_4_ -> _10_0_1_
+    _10_0_1_ -> _3_7_1_
+    _3_7_1_ -> _3_4_4_
+    _10_0_1_ -> _10_1_0_
+    _10_1_0_ -> _6_1_4_
+    _6_1_4_ -> _6_5_0_
+    _6_5_0_ -> _2_5_4_
+    _2_5_4_ -> _2_7_2_
+    _7_0_4_ -> _7_4_0_
+    _0_7_4_ -> _4_7_0_
+    _4_7_0_ -> _4_3_4_
+    _4_3_4_ -> _8_3_0_
+    _8_3_0_ -> _8_0_3_
+    _8_0_3_ -> _1_7_3_
+    _1_7_3_ -> _1_6_4_
+    _1_6_4_ -> _5_6_0_
+    _5_6_0_ -> _5_2_4_
+    _0_7_4_;
+    _7_0_4_;
+    _4_7_0_;
+    _10_0_1_;
+    _7_4_0_;
+    _3_7_1_;
+    _10_1_0_;
+    _3_4_4_;
+    _6_1_4_;
+    _6_5_0_;
+    _2_5_4_;
+    _2_7_2_;
+    _4_3_4_;
+    _8_3_0_;
+    _8_0_3_;
+    _1_7_3_;
+    _1_6_4_;
+    _5_6_0_;
+    _5_2_4_;
+}
