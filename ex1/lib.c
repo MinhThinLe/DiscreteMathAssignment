@@ -6,5 +6,5 @@ typedef struct {
 
 typedef struct {
     State state;
-    Vector nexts;
+    Vector children;
 } Node;
