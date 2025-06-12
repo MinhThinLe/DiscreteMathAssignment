@@ -1,16 +1,18 @@
 #include "vector.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
     int content[3];
 } State;
 
 const int CAPACITY[] = {10, 7, 4};
+int FOUND = 0;
 
 Vector VISITED;
 
 int is_finishing_condition(State state) {
-    return state.content[1] == 2 || state.content[2] == 2;
+    return (state.content[1] == 2 || state.content[2] == 2);
 }
 
 int min(int a, int b) { return a < b ? a : b; }
@@ -78,14 +80,13 @@ void explore(State root) {
     vector_setup(&possible_moves, 0, sizeof(State));
 
     get_valid_moves(&possible_moves, root);
-    vector_extend(&VISITED, &possible_moves);
 
     for (int i = 0; i < possible_moves.size; i++) {
         State node = *(State *)vector_get(&possible_moves, i);
+        vector_push_back(&VISITED, &node.content);
         print_root_and_node(root, node);
-        if (is_finishing_condition(node)) {
-            return;
-        }
+
+        if (is_finishing_condition(node)) exit(0);
         explore(node);
     }
 }
@@ -96,11 +97,6 @@ int main() {
     vector_push_back(&VISITED, &root);
 
     explore(root);
-    for (int i = 0; i < VISITED.size; i++) {
-        State node = *(State *)vector_get(&VISITED, i);
-        printf("_%d_%d_%d_;\n", node.content[0], node.content[1],
-               node.content[2]);
-    }
 
     return 0;
 }
