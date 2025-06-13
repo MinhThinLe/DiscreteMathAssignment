@@ -66,6 +66,7 @@ int are_words_connected(char *word1, char *word2) {
     // kiểm tra xem có đúng 1 ký tự khác biệt hay không
     return differences == 1;
 }
+
 /*
  * Nối 1 đỉnh với các đỉnh còn lại thỏa mãn điều kiện
  * Tham số:
