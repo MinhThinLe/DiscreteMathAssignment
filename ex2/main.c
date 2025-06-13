@@ -32,23 +32,6 @@ void read_dict(Vector *words) {
     }
 }
 
-void print_connections(Node *node) {
-    printf("Conneted to\n");
-    for (int i = 0; i < node->nexts.size; i++) {
-        Node *connected_node = (Node *)vector_get(&node->nexts, i);
-        printf("\t %s\n", connected_node->content);
-    }
-}
-
-void vector_print(Vector *vector) {
-    for (int i = 0; i < vector->size; i++) {
-        Node *node = vector_get(vector, i);
-
-        printf("Node\ncontent: %s\n", node->content);
-        print_connections(node);
-    }
-}
-
 int are_words_connected(char *word1, char *word2) {
     int differences = 0;
     for (int i = 0; i < 5; i++) {
@@ -75,17 +58,6 @@ void connect_node(Node *node, Vector *nodes) {
             vector_push_back(&node->nexts, &other_node);
         }
     }
-}
-
-void node_print(Node *node) {
-    printf("Node \n");
-    printf("\t.content = %s\n", node->content);
-    printf("\t.nexts = {\n");
-    for (int i = 0; i < node->nexts.size; i++) {
-        Node *next = *(Node **)vector_get(&node->nexts, i);
-        printf("\t\t%s\n", next->content);
-    }
-    printf("\t}\n");
 }
 
 void connect_nodes(Vector *node_vector) {
@@ -153,7 +125,7 @@ void count_components(Vector *node_vector) {
         components++;
     }
     int isolated_words = count_isolated_words(node_vector);
-    printf("There are %d components in this graph\n",
+    printf("Có %d thành phần liên thông trong đồ thị\n",
            components - isolated_words);
 }
 
@@ -164,7 +136,7 @@ Node *find_node(Vector *nodes, char *content) {
             return node;
         }
     }
-    printf("The graph doesn't contain %s, sorry\n", content);
+    printf("Đồ thị không chứa %s\n", content);
     return NULL;
 }
 
@@ -186,7 +158,7 @@ void add_to_search_order(Vector *search_order, Node *node) {
     }
 }
 
-int visited(Vector *search_order, Node *node) {
+int dfs_has_visited(Vector *search_order, Node *node) {
     for (int i = 1; i < search_order->size; i++) {
         VisitingOrder *visited_node =
             (VisitingOrder *)vector_get(search_order, i);
@@ -245,13 +217,13 @@ void breath_first_search(Vector *nodes, char *start, char *end) {
         Node *current_node = *(Node **)vector_get(&queue, 0);
         vector_pop_front(&queue);
 
-        if (visited(&visiting_order, current_node)) {
+        if (dfs_has_visited(&visiting_order, current_node)) {
             continue;
         }
 
         if (strncmp(current_node->content, end_node->content, 5) == 0) {
             // Found end node
-            printf("Found the end node\n");
+            printf("Đường đi ngắn nhất từ %s đến %s như sau\n", start, end);
             reconstruct_path(current_node, start_node, &visiting_order);
             return;
         } else {
@@ -259,13 +231,13 @@ void breath_first_search(Vector *nodes, char *start, char *end) {
             add_to_search_order(&visiting_order, current_node);
         }
     }
-    printf("Can't get from %s to %s in this graph\n", start, end);
+    printf("Không tồn tại đường đi từ %s đến %s trong đồ thị này\n", start, end);
 }
 
 void bfs_setup(char *start, char *end) {
-    printf("Select starting point: ");
+    printf("Chọn điểm bắt đầu: ");
     fgets(start, 9, stdin);
-    printf("Select ending point: ");
+    printf("Chọn điểm kết thúc: ");
     fgets(end, 9, stdin);
     trim(start);
     trim(end);
