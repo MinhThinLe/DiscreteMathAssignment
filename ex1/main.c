@@ -82,7 +82,8 @@ int has_visited(Vector *visited_nodes, State state) {
  * Trả về:
  *  void (dữ liệu được viết vào moves)
  */
-void find_moves(Vector *visited_nodes, Vector *moves, State state, int checking) {
+void find_moves(Vector *visited_nodes, Vector *moves, State state,
+                int checking) {
     // Duyệt qua các bình khác
     for (int i = 0; i < 3; i++) {
         State current_move = state;
@@ -93,16 +94,16 @@ void find_moves(Vector *visited_nodes, Vector *moves, State state, int checking)
         if (current_move.content[i] == CAPACITY[i])
             continue;
 
-        // Lượng nước được chuyển sẽ bằng số bé hơn giữa lượng nước có thể chuyển và
-        // lượng nước có thể chứa thêm
+        // Lượng nước được chuyển sẽ bằng số bé hơn giữa lượng nước có thể
+        // chuyển và lượng nước có thể chứa thêm
         int to_transfer = min(CAPACITY[i] - current_move.content[i],
                               current_move.content[checking]);
         // Chuyển nước
         current_move.content[i] += to_transfer;
         current_move.content[checking] -= to_transfer;
 
-        // Nếu sau khi chuyển nước giữa các bình lặp lại một trong các trạng thái đã
-        // duyệt thì ta bỏ qua
+        // Nếu sau khi chuyển nước giữa các bình lặp lại một trong các trạng
+        // thái đã duyệt thì ta bỏ qua
         if (has_visited(visited_nodes, current_move))
             continue;
 
@@ -167,7 +168,8 @@ void explore(Vector *visited_nodes, State root) {
         print_root_and_node(root, node);
 
         // Nếu đỉnh hiện tại là điều kiện kết thúc, kết thúc chương trình
-        if (is_finishing_condition(node)) exit(0);
+        if (is_finishing_condition(node))
+            exit(0);
         // Nếu không, tiếp tục duyệt qua các đỉnh khác
         explore(visited_nodes, node);
     }
