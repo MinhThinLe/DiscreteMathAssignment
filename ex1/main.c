@@ -7,9 +7,6 @@ typedef struct {
 } State;
 
 const int CAPACITY[] = {10, 7, 4};
-int FOUND = 0;
-
-Vector VISITED;
 
 /*
  * Kiểm tra xem đã đạt điều kiện kết thúc chưa
