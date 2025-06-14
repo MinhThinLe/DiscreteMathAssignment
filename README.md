@@ -15,19 +15,23 @@ Sau đó, cd vào thư mục chứa mã nguồn với
 cd DiscreteMathAssignment
 ```
 
-Để chạy chương trình tương ứng với từng bài tập, chạy lệnh sau
+Để thực thi chương trình của bài tập 1, hãy chạy lệnh sau
 
 ```
 make exercise_1
 ```
 
-Để thực thi chương trình của bài tập 1. 
-Tương tự như vậy, chạy
+Lưu ý rằng sau khi chạy bài tập 1, kết quả sẽ được ghi vào file `result.txt`.  
+Dán nội dung file đó vào `ex1/graph.gv` để có được đồ thị mô tả cây DFS.
+
+Với bài tập 2, chạy
 
 ```
 make exercise_2
 ```
 
 Để thực thi chương trình của bài tập 2.
+
+Bài tập 3 chưa được hoàn thiện 😓
 
 Chương trình có sử dụng thư việc vector của [Peter Goldsborough](https://github.com/goldsborough/vector)
