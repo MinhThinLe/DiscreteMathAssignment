@@ -34,4 +34,4 @@ make exercise_2
 
 Bài tập 3 chưa được hoàn thiện 😓
 
-Chương trình có sử dụng thư việc vector của [Peter Goldsborough](https://github.com/goldsborough/vector)
+Chương trình có sử dụng thư viện vector của [Peter Goldsborough](https://github.com/goldsborough/vector)
