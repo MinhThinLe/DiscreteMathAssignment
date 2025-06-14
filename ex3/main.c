@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "vector.h"
+#include "../lib/vector.h"
 
 #define POINTER_SIZE 8
 
