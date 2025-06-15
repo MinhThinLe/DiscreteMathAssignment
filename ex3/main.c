@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "../lib/vector.h"
 
 #define POINTER_SIZE 8
@@ -38,6 +39,7 @@ int contains(char *word, char character) {
     int length = strlen(word);
     for (int i = 0; i < length; i++) {
         if (word[i] == character) {
+            // Có thể là bất cứ ký tự nào không phải chữ cái, chỉ nhằm mục đích đánh dấu
             word[i] = ' ';
             return 1;
         }
@@ -58,8 +60,12 @@ int is_word_connected_to(char *word, char *dest) {
     char to_compare[10];
     char target[10];
 
-    // Bắt đầu kiểm tra từ chữ cái thứ 2
+    if (strncmp(word, dest, 5) == 0) {
+        // Rõ ràng một đỉnh không thể kết nối được với chính nó
+        return 0;
+    }
 
+    // Bắt đầu kiểm tra từ chữ cái thứ 2
     strncpy(to_compare, word + 1, 9);
     strncpy(target, dest, 9);
 
@@ -145,9 +151,86 @@ void print_node(Node *node) {
 
 void print_nodes(Vector *nodes) {
     for (int i = 0; i < nodes->size; i++) {
-        Node *node = vector_get(nodes, i);
+        Node *node = *(Node **) vector_get(nodes, i);
         print_node(node);
     }
+}
+
+int has_visited(Node *node, Vector *visited) {
+    for (int i = 0; i < visited->size; i++) {
+        Node *visited_node = *(Node **) vector_get(visited, i);
+        if (node == visited_node) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void visit(Node *node, Vector *stack, Vector *visited) {
+    if (has_visited(node, visited)) {
+        return;
+    }
+    vector_push_back(visited, &node);
+    if (stack != NULL) {
+        vector_push_back(stack, &node);
+    }
+    for (int i = 0; i < node->nexts.size; i++) {
+        Node *node_to_visit = *(Node **) vector_get(&node->nexts, i);
+        visit(node_to_visit, stack, visited);
+    }
+}
+// Vector *node: A vector containing Nodes
+Vector get_nodes_connected_to(Node *node, Vector *nodes) {
+    Vector connected_nodes;
+    vector_setup(&connected_nodes, 0, POINTER_SIZE);
+    for (int i = 0; i < nodes->size; i++) {
+        Node *other_node = (Node *) vector_get(nodes, i);
+        if (is_word_connected_to(other_node->content, node->content)) {
+            vector_push_back(&connected_nodes, &other_node);
+        }
+    }
+    return connected_nodes;
+}
+
+// Vector *original_graph: A vector containing Nodes
+// Vector *stack: A stack of graph containing pointers to Node to be transposed 
+void graph_transposition(Vector *original_graph, Vector *stack) {
+    for (int i = 0; i < stack->size; i++) {
+        Node *current_node = *(Node **) vector_get(stack, i);
+        current_node->nexts = get_nodes_connected_to(current_node, original_graph);
+    }
+}
+
+void kosaraju(Vector *node_vector) {
+    Vector stack;
+    Vector visited;
+
+    vector_setup(&stack, 1000, POINTER_SIZE);
+    vector_setup(&visited, 1000, POINTER_SIZE);
+    
+    for (int i = 0; i < node_vector->size; i++) {
+        Node *node = (Node *) vector_get(node_vector, i);
+        visit(node, &stack, &visited);
+    }
+    
+    // Second phase of the algorithm
+    vector_clear(&visited);
+    graph_transposition(node_vector, &stack);
+    int scc_counter = 0;
+
+    while (stack.size != 0) {
+        Node *node = *(Node **) vector_get(&stack, stack.size - 1);
+        vector_pop_back(&stack);
+        if (has_visited(node, &visited)) {
+            continue;
+        }
+        if (node->nexts.size == 0) {
+            continue;
+        }
+        scc_counter++;
+        visit(node, NULL, &visited);
+    }
+    printf("SCC counter: %d\n", scc_counter);
 }
 
 int main() {
@@ -157,10 +240,20 @@ int main() {
     vector_setup(&words, 1000, 8);
     vector_setup(&node_vector, 1000, sizeof(Node));
 
+    clock_t start_of_read_dict = clock();
     read_dict(&words);
-    construct_node_vector(&node_vector, &words);
-    
-    print_nodes(&node_vector);
+    clock_t end_of_read_dict = clock();
 
+    clock_t start_of_construct_node_vector = clock();
+    construct_node_vector(&node_vector, &words);
+    clock_t end_of_construct_node_vector = clock();
+    
+    clock_t start_of_kosaraju = clock();
+    kosaraju(&node_vector);
+    clock_t end_of_kosaraju = clock();
+
+    printf("Reading dict took: %f seconds\n", (float) (end_of_read_dict - start_of_read_dict) / CLOCKS_PER_SEC);
+    printf("Construct node vector took: %f seconds\n", (float) (end_of_construct_node_vector - start_of_construct_node_vector) / CLOCKS_PER_SEC);
+    printf("Kosaraju took: %f seconds\n", (float) (end_of_kosaraju - start_of_kosaraju) / CLOCKS_PER_SEC);
     return 0;
 }
