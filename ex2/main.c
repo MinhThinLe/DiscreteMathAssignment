@@ -346,7 +346,7 @@ void reconstruct_path(Node *end_node, Node *start_node, Vector *search_order) {
  * Trả về:
  *   void
  */
-void breath_first_search(Vector *nodes, char *start, char *end) {
+void breadth_first_search(Vector *nodes, char *start, char *end) {
     // Chắc chắn rằng đồ thị có chứa đỉnh cần tìm
     Node *start_node = find_node(nodes, start);
     Node *end_node = find_node(nodes, end);
@@ -429,7 +429,7 @@ int main() {
     // Phần 2 của đề bài
     char start[10] = {}, end[10] = {};
     bfs_setup(start, end);
-    breath_first_search(&node_vector, start, end);
+    breadth_first_search(&node_vector, start, end);
 
     return 0;
 }
