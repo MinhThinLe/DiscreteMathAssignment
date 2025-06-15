@@ -6,3 +6,7 @@ exercise_1:
 exercise_2:
 	@gcc -Wall -Werror ex2/main.c lib/vector.c -o main
 	@./main
+
+exercise_3:
+	gcc -Wall -Werror ex3/main.c lib/vector.c -o main
+	./main

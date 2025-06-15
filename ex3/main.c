@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "../lib/vector.h"
 
 #define POINTER_SIZE 8
@@ -33,6 +34,17 @@ void read_dict(Vector *words) {
     }
 }
 
+int contains(char *word, char character) {
+    int length = strlen(word);
+    for (int i = 0; i < length; i++) {
+        if (word[i] == character) {
+            word[i] = ' ';
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /*
  * Kiểm tra xem hai từ có được kết nối với nhau không với điều kiện kết nối là
  * hai từ khác nhau đúng một chữ cái
@@ -42,16 +54,21 @@ void read_dict(Vector *words) {
  * Trả về: 0 nếu hai từ không được kết nối với nhau
  * 1 nếu ngược lại
  */
-int are_words_connected(char *word1, char *word2) {
-    int differences = 0;
-    // Đếm ký tự khác biệt giữa hai từ
-    for (int i = 0; i < 5; i++) {
-        if (word1[i] != word2[i]) {
-            differences++;
+int is_word_connected_to(char *word, char *dest) {
+    char to_compare[10];
+    char target[10];
+
+    // Bắt đầu kiểm tra từ chữ cái thứ 2
+
+    strncpy(to_compare, word + 1, 9);
+    strncpy(target, dest, 9);
+
+    for (int i = 0; i < 4; i++) {
+        if (!contains(target, to_compare[i])) {
+            return 0;
         }
     }
-    // kiểm tra xem có đúng 1 ký tự khác biệt hay không
-    return differences == 1;
+    return 1;
 }
 
 /*
@@ -66,7 +83,7 @@ void connect_node(Node *node, Vector *nodes) {
     for (int i = 0; i < nodes->size; i++) {
         Node *other_node = (Node *)vector_get(nodes, i);
         // Nếu tìm thấy 1 đỉnh khác thỏa mãn, thêm con trỏ của nó vào node->next
-        if (are_words_connected(node->content, other_node->content)) {
+        if (is_word_connected_to(node->content, other_node->content)) {
             vector_push_back(&node->nexts, &other_node);
         }
     }
@@ -113,6 +130,26 @@ void construct_node_vector(Vector *node_vector, Vector *word_vector) {
     connect_nodes(node_vector);
 }
 
+void print_connections(Node *node) {
+    printf("Connected to:\n");
+    for (int i = 0; i < node->nexts.size; i++) {
+        Node *next = *(Node **) vector_get(&node->nexts, i);
+        printf("\t%s\n", next->content);
+    }
+}
+
+void print_node(Node *node) {
+    printf("Content: %s\n", node->content);
+    print_connections(node);
+}
+
+void print_nodes(Vector *nodes) {
+    for (int i = 0; i < nodes->size; i++) {
+        Node *node = vector_get(nodes, i);
+        print_node(node);
+    }
+}
+
 int main() {
     Vector words;
     Vector node_vector;
@@ -122,6 +159,8 @@ int main() {
 
     read_dict(&words);
     construct_node_vector(&node_vector, &words);
+    
+    print_nodes(&node_vector);
 
     return 0;
 }
