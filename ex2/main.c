@@ -30,7 +30,7 @@ void trim(char buffer[]) { buffer[5] = '\0'; }
 /*
  * Đọc từ điển và thêm nội dung của nó vào words
  * Tham số:
- *  Vector *words: Con trỏ đến các từ sau khi đọc sẽ được viết vào đây
+ *  Vector *words: Chứa nội dung của các từ
  * Trả về:
  *  void (con trỏ đến dữ liệu sau khi đọc sẽ được viết vào words)
  */
@@ -71,7 +71,7 @@ int are_words_connected(char *word1, char *word2) {
  * Nối 1 đỉnh với các đỉnh còn lại thỏa mãn điều kiện
  * Tham số:
  *  Node *node: Đỉnh đang xét
- *  Vector *nodes: Các đỉnh còn lại
+ *  Vector *nodes: Một vector chứa Node, là các đỉnh còn lại
  * Trả về:
  *  void
  */
@@ -88,7 +88,7 @@ void connect_node(Node *node, Vector *nodes) {
 /*
  * Nối tất cả đỉnh lại với nhau (hàm wrapper cho connect_node)
  * Tham số:
- *  Vector *node_vector: Danh sách các đỉnh
+ *  Vector *node_vector: Danh sách các đỉnh, chứa Node
  * Trả về:
  *  void
  */
@@ -102,11 +102,12 @@ void connect_nodes(Vector *node_vector) {
 /*
  * Xây dựng danh sách các đỉnh từ danh sách các từ và nối chúng lại với nhau
  * Tham số:
- *  Vector *node_vector: Sau khi hàm kết thúc, dữ liệu sẽ được viết vào đây
+ *  Vector *node_vector: Sau khi hàm kết thúc, dữ liệu sẽ được viết vào đây dưới
+ *  dạng Node
  *  Vector *word_vector: Danh sách các từ
  * Trả về:
  *  void
- * Thuật toán này thật sự không tối ưu với thời gian chạy khoảng gần 3s trên
+ * Thuật toán này thật sự không tối ưu với thời gian chạy khoảng hơn 1s trên
  * CPU Intel Core i5 12450H nhưng mà ai bảo nó hoạt động làm gì ¯\_(ツ)_/¯
  */
 void construct_node_vector(Vector *node_vector, Vector *word_vector) {
@@ -131,7 +132,8 @@ void construct_node_vector(Vector *node_vector, Vector *word_vector) {
  * Tham số:
  *  Node *node: Đỉnh đang xét
  *  Vector VISITED: Biến toàn cục, danh sách các đỉnh đã ghé thăm (VISITED hoàn
- *  toàn không nhất thiết phải là biết toàn cục cơ mà nó hoạt động ¯\_(ツ)_/¯)
+ *  toàn không nhất thiết phải là biết toàn cục cơ mà nó hoạt động ¯\_(ツ)_/¯),
+ *  chứa con trỏ đến Node
  * Trả về:
  *  0 nếu đỉnh không tồn tại trong danh sách đã duyệt qua
  *  1 nếu ngược lại
@@ -171,7 +173,7 @@ void explore(Node *node) {
 /*
  * Đếm phần tử đơn độc (phần tử không kết nối với phần tử nào khác)
  * Tham số:
- *  Vector *node_vector: Danh sách các phần tử
+ *  Vector *node_vector: Danh sách các phần tử, chứa Node
  * Trả về:
  *  int: số các phần tử đơn độc
  */
@@ -191,7 +193,7 @@ int count_isolated_words(Vector *node_vector) {
 /*
  * Đếm thành phần liên thông
  * Tham số:
- *  Vector *node_vector: Danh sách các đỉnh
+ *  Vector *node_vector: Danh sách các đỉnh, chứa Node
  * Trả về:
  *  void (số thành phần liên thông sẽ được in ra stdout)
  */
@@ -217,7 +219,7 @@ void count_components(Vector *node_vector) {
 /*
  * Tìm đỉnh có chứa cùng nội dung với content
  * Tham số:
- *  Vector *nodes: Danh sách các đỉnh
+ *  Vector *nodes: Danh sách các đỉnh, chứa Node
  *  char *content: Nội dung cần tìm
  * Trả về:
  *  Node *: Con trỏ đến node chứa nội dung cần tìm
@@ -237,7 +239,7 @@ Node *find_node(Vector *nodes, char *content) {
 /*
  * Thêm các đỉnh con của node vào hàng chờ (dùng cho bfs)
  * Tham số:
- *  Vector *queue: Hàng chờ
+ *  Vector *queue: Hàng chờ, chứa con trỏ đến Node
  *  Node *node: Đỉnh đang xét
  * Trả về:
  *  void
@@ -252,7 +254,7 @@ void add_to_queue(Vector *queue, Node *node) {
 /*
  * Thêm các đỉnh con của node vào thứ tự tìm kiếm (để tái lập đường đi)
  * Tham số:
- *  Vector *search_order: Danh sách thứ tự tìm kiếm
+ *  Vector *search_order: Danh sách thứ tự tìm kiếm, chứa VisitingOrder
  *  Node *node: Đỉnh đang xét
  * Trả về:
  *  void
@@ -274,7 +276,8 @@ void add_to_search_order(Vector *search_order, Node *node) {
  * Kiểm tra xem đã ghé thăm một đỉnh chưa, khác với has_visited dùng trong đếm
  * thành phần liên thông 
  * Tham số:
- *  Vector *search_order: Danh sách thứ tự tìm kiếm (tái sử dụng để tiết kiệm bộ nhớ) 
+ *  Vector *search_order: Danh sách thứ tự tìm kiếm (tái sử dụng để tiết kiệm bộ nhớ),
+ *  chứa VisitingOrder
  *  Node *node: Đỉnh cần kiểm tra 
  *  Trả về:
  *   0 nếu đỉnh chưa được ghé thăm
@@ -294,7 +297,7 @@ int dfs_has_visited(Vector *search_order, Node *node) {
 /*
  * Tìm trong vector thứ tự tìm kiếm có chứa node là .current
  * Tham số:
- *  Vector *search_order: Vector chứa thứ tự tìm kiếm
+ *  Vector *search_order: Vector chứa thứ tự tìm kiếm, VisitingOrder
  *  Node *node: Đỉnh cần tìm từ trong vector
  * Trả về:
  *   Một VisitingOrder có .current là node nếu tìm thấy
@@ -319,7 +322,7 @@ VisitingOrder locate_node(Vector *search_order, Node *node) {
  * Tham số:
  *  Node *end_node: Đỉnh kết thúc
  *  Node *start_node: Đỉnh bắt đầu
- *  Vector *search_order: Danh sách chứa thứ tự duyệt các đỉnh
+ *  Vector *search_order: Danh sách chứa thứ tự duyệt các đỉnh, 
  * Trả về:
  *  void (kết quả được in ra stdout)
  */
@@ -338,9 +341,9 @@ void reconstruct_path(Node *end_node, Node *start_node, Vector *search_order) {
 
 /*
  * Dùng thuật toán breadth first search để tìm đường đi ngắn nhất giữa hai đỉnh
- * trong một unweighted graph?? 
+ * trong một unweighted?? graph (không biết dịch sang tiếng Việt 🙁)
  * Tham số: 
- *  Vector *nodes: Các đỉnh của đồ thị 
+ *  Vector *nodes: Các đỉnh của đồ thị, chứa Node
  *  char *start: Nội dung của đỉnh bắt đầu 
  *  char *end: Nội dung của đỉnh kết thúc 
  * Trả về:
