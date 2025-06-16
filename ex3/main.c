@@ -10,6 +10,7 @@
 typedef struct {
     char *content;
     Vector nexts;
+    char *part_of_group;
 } Node;
 
 // Tái sử dụng từ bài tập 2
@@ -129,7 +130,7 @@ void print_node(Node *node) {
 // TODO: Xóa hàm này khi làm xong
 void print_nodes(Vector *nodes) {
     for (int i = 0; i < nodes->size; i++) {
-        Node *node = *(Node **) vector_get(nodes, i);
+        Node *node = (Node *) vector_get(nodes, i);
         print_node(node);
     }
 }
@@ -164,7 +165,7 @@ int has_visited(Node *node, Vector *visited) {
  * Trả về:
  *  void
  */
-void visit(Node *node, Vector *stack, Vector *visited) {
+void visit(Node *node, Vector *stack, Vector *visited, char *part_of_group) {
     if (has_visited(node, visited)) {
         return;
     }
@@ -174,10 +175,13 @@ void visit(Node *node, Vector *stack, Vector *visited) {
     if (stack != NULL) {
         vector_push_back(stack, &node);
     }
+    if (part_of_group != NULL) {
+        node->part_of_group = part_of_group;
+    }
     // DFS
     for (int i = 0; i < node->nexts.size; i++) {
         Node *node_to_visit = *(Node **) vector_get(&node->nexts, i);
-        visit(node_to_visit, stack, visited);
+        visit(node_to_visit, stack, visited, part_of_group);
     }
 }
 
@@ -234,7 +238,7 @@ void kosaraju(Vector *node_vector) {
 
     for (int i = 0; i < node_vector->size; i++) {
         Node *node = (Node *) vector_get(node_vector, i);
-        visit(node, &stack, &visited);
+        visit(node, &stack, &visited, NULL);
     }
 
     // Second phase of the algorithm
@@ -252,9 +256,9 @@ void kosaraju(Vector *node_vector) {
             continue;
         }
         scc_counter++;
-        visit(node, NULL, &visited);
+        visit(node, NULL, &visited, node->content);
     }
-    printf("SCC counter: %d\n", scc_counter);
+    printf("Số thành phần liên thông mạnh có trong đồ thị là %d\n", scc_counter);
 }
 
 // Tái sử dụng từ bài 2
@@ -380,6 +384,52 @@ void breadth_first_search(Vector *nodes, char *start, char *end) {
            end);
 }
 
+Node *find_node_with_content(Vector *node_vector, char *content_to_find) {
+    for (int i = 0; i < node_vector->size; i++) {
+        Node *node = (Node *) vector_get(node_vector, i);
+        if (strncmp(node->content, content_to_find, 5) == 0) {
+            return node;
+        }
+    }
+    return NULL;
+}
+
+void print_strongly_connected_group(Vector *node_vector) {
+    printf("Nhập từ cần tìm thành phần liên thông mạnh: ");
+    char to_search[10];
+    fgets(to_search, 9, stdin);
+    trim(to_search);
+
+    Node *node = find_node_with_content(node_vector, to_search);
+    if (node->part_of_group == NULL) {
+        goto exit;
+    }
+
+    int printed = 0;
+    int printed_header = 0;
+    for (int i = 0; i < node_vector->size; i++) {
+        Node *other_node = vector_get(node_vector, i);
+        if (other_node->part_of_group == NULL) {
+            continue;
+        }
+        if (strncmp(other_node->content, node->content, 5) == 0) {
+            continue;
+        }
+        if (strncmp(other_node->part_of_group, node->part_of_group, 5) == 0) {
+            if (!printed_header) {
+                printf("Các từ cùng thành phần liên thông mạnh với %s là:\n", node->content);
+                printed_header = 1;
+            }
+            printf("%s\n", other_node->content);
+            printed = 1;
+        }
+    }
+    exit:
+        if (!printed) {
+            printf("Từ %s không nằm trong thành phần liên thông mạnh nào cả\n", node->content);
+        }
+}
+
 int main() {
     Vector words;
     Vector node_vector;
@@ -392,24 +442,15 @@ int main() {
     read_dict(&words);
     construct_node_vector(&node_vector, &words);
 
-    // Không may mắn thay, hàm kosaraju sẽ thay đổi nội dung của node_vector.
-    // Thay vì sửa đổi thuật toán để bỏ sự thay đổi này thì chúng ta sẽ tạo ra
-    // một bản sao của node_vector trước khi chạy thuật toán vì đây là cách sửa
-    // lỗi nhanh nhất.
-    // Rant: Vì C được thiết kế là một ngôn ngữ bậc thấp và cũng ngoa khi gọi C
-    // là assembly thân thiện hơn nên trình biên dịch C không thể cảnh báo lập
-    // trình viên rằng họ sắp tự bắn vào chân mình. Với những lập trình viên C
-    // lão luyện thì đây là một sự kiện hằng tuần vào mỗi ngày lẻ. Tuy nhiên, với
-    // những người đang cố gắng học C thì đây là một cạm bẫy rất dễ mắc phải.
-    // Tất cả mọi cạm bẫy này có thể tránh được bằng cách sử dụng một ngôn ngữ
-    // lập trình bậc thấp khác là Rust. Lỗi vô ý thay đổi giá trị từ con trỏ
-    // là một lỗi không thể xảy ra ở Rust vì bạn phải cung cấp nhiều thông tin
-    // hơn về kiểu dữ liệu để dựa vào đó, trình biên dịch có thể dừng bạn lại
-    // trước khi sai lầm này có thể đi vào code base của bạn.
+    // Vì theo thiết kế của thuật toán, node_vector sẽ bị thay đổi khi chạy hàm kosaraju
+    // nên để chương trình thực hiện được theo thứ tự của yêu cầu đề bài, ta tạo một bản
+    // sao của node_vector trước khi chạy chương trình
     vector_copy(&node_vector_backup, &node_vector);
     
     // Chạy thuật toán Kosaraju
     kosaraju(&node_vector);
+
+    print_strongly_connected_group(&node_vector);
 
     // Third part of the assignment
     char start[10] = {}, end[10] = {};

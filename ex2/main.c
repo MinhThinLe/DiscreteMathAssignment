@@ -1,5 +1,5 @@
-#include "stdio.h"
 #include "../lib/vector.h"
+#include "stdio.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -274,14 +274,11 @@ void add_to_search_order(Vector *search_order, Node *node) {
 
 /*
  * Kiểm tra xem đã ghé thăm một đỉnh chưa, khác với has_visited dùng trong đếm
- * thành phần liên thông 
+ * thành phần liên thông
  * Tham số:
- *  Vector *search_order: Danh sách thứ tự tìm kiếm (tái sử dụng để tiết kiệm bộ nhớ),
- *  chứa VisitingOrder
- *  Node *node: Đỉnh cần kiểm tra 
- *  Trả về:
- *   0 nếu đỉnh chưa được ghé thăm
- *   1 nếu ngược lại
+ *  Vector *search_order: Danh sách thứ tự tìm kiếm (tái sử dụng để tiết kiệm bộ
+ * nhớ), chứa VisitingOrder Node *node: Đỉnh cần kiểm tra Trả về: 0 nếu đỉnh
+ * chưa được ghé thăm 1 nếu ngược lại
  */
 int dfs_has_visited(Vector *search_order, Node *node) {
     for (int i = 1; i < search_order->size; i++) {
@@ -322,7 +319,7 @@ VisitingOrder locate_node(Vector *search_order, Node *node) {
  * Tham số:
  *  Node *end_node: Đỉnh kết thúc
  *  Node *start_node: Đỉnh bắt đầu
- *  Vector *search_order: Danh sách chứa thứ tự duyệt các đỉnh, 
+ *  Vector *search_order: Danh sách chứa thứ tự duyệt các đỉnh,
  * Trả về:
  *  void (kết quả được in ra stdout)
  */
@@ -342,10 +339,10 @@ void reconstruct_path(Node *end_node, Node *start_node, Vector *search_order) {
 /*
  * Dùng thuật toán breadth first search để tìm đường đi ngắn nhất giữa hai đỉnh
  * trong một unweighted?? graph (không biết dịch sang tiếng Việt 🙁)
- * Tham số: 
+ * Tham số:
  *  Vector *nodes: Các đỉnh của đồ thị, chứa Node
- *  char *start: Nội dung của đỉnh bắt đầu 
- *  char *end: Nội dung của đỉnh kết thúc 
+ *  char *start: Nội dung của đỉnh bắt đầu
+ *  char *end: Nội dung của đỉnh kết thúc
  * Trả về:
  *   void
  */
