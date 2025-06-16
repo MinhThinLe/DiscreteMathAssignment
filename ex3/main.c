@@ -112,29 +112,6 @@ void construct_node_vector(Vector *node_vector, Vector *word_vector) {
     connect_nodes(node_vector);
 }
 
-// TODO: Xóa hàm này khi làm xong
-void print_connections(Node *node) {
-    printf("Connected to:\n");
-    for (int i = 0; i < node->nexts.size; i++) {
-        Node *next = *(Node **) vector_get(&node->nexts, i);
-        printf("\t%s\n", next->content);
-    }
-}
-
-// TODO: Xóa hàm này khi làm xong
-void print_node(Node *node) {
-    printf("Content: %s\n", node->content);
-    print_connections(node);
-}
-
-// TODO: Xóa hàm này khi làm xong
-void print_nodes(Vector *nodes) {
-    for (int i = 0; i < nodes->size; i++) {
-        Node *node = (Node *) vector_get(nodes, i);
-        print_node(node);
-    }
-}
-
 /*
  * Kiểm tra xem đỉnh đã được duyệt qua chưa
  * Tham số:
