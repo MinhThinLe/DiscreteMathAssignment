@@ -237,7 +237,7 @@ void kosaraju(Vector *node_vector) {
         scc_counter++;
         visit(node, NULL, &visited, node->content);
     }
-    printf("Số thành phần liên thông mạnh có trong đồ thị là %d\n", scc_counter);
+    //printf("Số thành phần liên thông mạnh có trong đồ thị là %d\n", scc_counter);
 }
 
 // Tái sử dụng từ bài 2
@@ -398,6 +398,10 @@ void print_strongly_connected_group(Vector *node_vector) {
 
     // Tìm đỉnh tương ứng với nội dung vừa nhập
     Node *node = find_node_with_content(node_vector, to_search);
+    if (node == NULL) {
+        printf("Đồ thị không chứa %s\n", to_search);
+        return;
+    }
     if (node->part_of_group == NULL) {
         goto exit;
     }
@@ -445,9 +449,9 @@ int main() {
     // Vì theo thiết kế của thuật toán, node_vector sẽ bị thay đổi khi chạy hàm kosaraju
     // nên để chương trình thực hiện được theo thứ tự của yêu cầu đề bài, ta tạo một bản
     // sao của node_vector trước khi chạy chương trình
-    vector_copy(&node_vector_backup, &node_vector);
+    // vector_copy(&node_vector_backup, &node_vector);
     
-    // Chạy thuật toán Kosaraju
+    // Phần 1 của đề bài
     kosaraju(&node_vector);
 
     // Phần 2 của đề bài
