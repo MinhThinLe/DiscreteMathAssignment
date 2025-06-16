@@ -424,10 +424,10 @@ void print_strongly_connected_group(Vector *node_vector) {
             printed = 1;
         }
     }
-    exit:
-        if (!printed) {
-            printf("Từ %s không nằm trong thành phần liên thông mạnh nào cả\n", node->content);
-        }
+    if (!printed) {
+        exit:
+        printf("Từ %s không nằm trong thành phần liên thông mạnh nào cả\n", node->content);
+    }
 }
 
 int main() {
