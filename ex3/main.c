@@ -139,6 +139,8 @@ int has_visited(Node *node, Vector *visited) {
  *  Vector *stack: Chồng các đỉnh theo thứ tự ghé thăm, truyền vào NULL nếu
  *  không muốn hàm quản lý chồng 🤨, chứa con trỏ tới các đỉnh đã duyệt qua
  *  Vector *visited: Danh sách các đỉnh đã ghé thăm
+ *  char *part_of_group: Con trỏ đến một xâu, nhằm đánh dấu đỉnh này thuộc
+ *  thành phần liên thông mạnh nào đó.
  * Trả về:
  *  void
  */
@@ -361,6 +363,15 @@ void breadth_first_search(Vector *nodes, char *start, char *end) {
            end);
 }
 
+/*
+ * Tìm một đỉnh có nội dung trùng với content_to_find
+ * Tham số:
+ *  Vector *node_vector: Một vector chứa các đỉnh của đồ thị, chứa Node
+ *  char *content_to_find: Xâu chứa nội dung cần tìm từ đồ thị
+ * Trả về:
+ *  Một con trỏ đến đỉnh thỏa mãn điều kiện, NULL nếu không thể tìm thấy
+ *  đỉnh thỏa mãn
+ */
 Node *find_node_with_content(Vector *node_vector, char *content_to_find) {
     for (int i = 0; i < node_vector->size; i++) {
         Node *node = (Node *) vector_get(node_vector, i);
@@ -371,12 +382,21 @@ Node *find_node_with_content(Vector *node_vector, char *content_to_find) {
     return NULL;
 }
 
+/*
+ * In ra các thành phần liên thông mạnh có trong đồ thị
+ * Tham số:
+ *  Vector *node_vector: Danh sách các đỉnh của đồ thị, chứa Node
+ * Trả về:
+ *  void
+ */
 void print_strongly_connected_group(Vector *node_vector) {
+    // Setup các biến cần thiết cho thuật toán
     printf("Nhập từ cần tìm thành phần liên thông mạnh: ");
     char to_search[10];
     fgets(to_search, 9, stdin);
     trim(to_search);
 
+    // Tìm đỉnh tương ứng với nội dung vừa nhập
     Node *node = find_node_with_content(node_vector, to_search);
     if (node->part_of_group == NULL) {
         goto exit;
@@ -386,12 +406,15 @@ void print_strongly_connected_group(Vector *node_vector) {
     int printed_header = 0;
     for (int i = 0; i < node_vector->size; i++) {
         Node *other_node = vector_get(node_vector, i);
+        // Nếu đỉnh không thuộc thành phần nào, ta tiếp tục tìm
         if (other_node->part_of_group == NULL) {
             continue;
         }
+        // Nếu nội dung 2 đỉnh trùng nhau, ta bỏ qua
         if (strncmp(other_node->content, node->content, 5) == 0) {
             continue;
         }
+        // Nếu tìm thấy một đỉnh khác cùng thành phần liên thông
         if (strncmp(other_node->part_of_group, node->part_of_group, 5) == 0) {
             if (!printed_header) {
                 printf("Các từ cùng thành phần liên thông mạnh với %s là:\n", node->content);
@@ -427,9 +450,10 @@ int main() {
     // Chạy thuật toán Kosaraju
     kosaraju(&node_vector);
 
+    // Phần 2 của đề bài
     print_strongly_connected_group(&node_vector);
 
-    // Third part of the assignment
+    // Phần 3 của đề bài
     char start[10] = {}, end[10] = {};
     bfs_setup(start, end);
     breadth_first_search(&node_vector_backup, start, end);
