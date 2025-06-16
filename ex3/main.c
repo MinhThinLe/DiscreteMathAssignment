@@ -237,7 +237,7 @@ void kosaraju(Vector *node_vector) {
         scc_counter++;
         visit(node, NULL, &visited, node->content);
     }
-    //printf("Số thành phần liên thông mạnh có trong đồ thị là %d\n", scc_counter);
+    printf("Số thành phần liên thông mạnh có trong đồ thị là %d\n", scc_counter);
 }
 
 // Tái sử dụng từ bài 2
