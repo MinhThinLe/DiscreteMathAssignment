@@ -449,7 +449,7 @@ int main() {
     // Vì theo thiết kế của thuật toán, node_vector sẽ bị thay đổi khi chạy hàm kosaraju
     // nên để chương trình thực hiện được theo thứ tự của yêu cầu đề bài, ta tạo một bản
     // sao của node_vector trước khi chạy chương trình
-    // vector_copy(&node_vector_backup, &node_vector);
+    vector_copy(&node_vector_backup, &node_vector);
     
     // Phần 1 của đề bài
     kosaraju(&node_vector);

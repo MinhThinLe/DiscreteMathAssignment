@@ -421,9 +421,11 @@ int main() {
     vector_setup(&VISITED, 1000, POINTER_SIZE);
     vector_setup(&node_vector, 1000, sizeof(Node));
 
-    // Phần 1 của đề bài
+    // Setup dữ liệu
     read_dict(&words);
     construct_node_vector(&node_vector, &words);
+
+    // Phần 1 của đề bài
     count_components(&node_vector);
 
     // Phần 2 của đề bài
