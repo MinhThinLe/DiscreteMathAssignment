@@ -41,7 +41,6 @@ make exercise_3
 ```
 
 Để chạy chương trình của bài tập 3.
-Lưu ý, phần 2 của chương trình chưa được hoàn thiện
 
 Chương trình có sử dụng thư viện vector của [Peter
 Goldsborough](https://github.com/goldsborough/vector)
